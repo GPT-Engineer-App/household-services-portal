@@ -10,16 +10,24 @@ const Login = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const handleLogin = () => {
-    localStorage.setItem("profile", JSON.stringify({ name: username }));
-    navigate("/index");
-  };
-
-  const handleSignUp = () => {
-    if (password === confirmPassword) {
+    if (username && password) {
       localStorage.setItem("profile", JSON.stringify({ name: username, password }));
       navigate("/index");
     } else {
-      alert("Passwords do not match!");
+      alert("Please enter your username and password.");
+    }
+  };
+
+  const handleSignUp = () => {
+    if (username && password && confirmPassword) {
+      if (password === confirmPassword) {
+        localStorage.setItem("profile", JSON.stringify({ name: username, password }));
+        navigate("/index");
+      } else {
+        alert("Passwords do not match!");
+      }
+    } else {
+      alert("Please fill in all fields.");
     }
   };
 
