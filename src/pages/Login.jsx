@@ -9,7 +9,7 @@ const Login = () => {
 
   const handleLogin = () => {
     localStorage.setItem("profile", JSON.stringify({ name: username }));
-    navigate("/");
+    navigate("/index");
   };
 
   return (
