@@ -1,7 +1,9 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Box, Button, FormControl, FormLabel, Image, Input, VStack } from "@chakra-ui/react";
 
 const Profile = () => {
+  const navigate = useNavigate();
   const [profile, setProfile] = useState(() => {
     const storedProfile = localStorage.getItem("profile");
     return storedProfile
@@ -31,6 +33,7 @@ const Profile = () => {
 
   const handleUpdateProfile = () => {
     localStorage.setItem("profile", JSON.stringify(profile));
+    navigate("/");
   };
 
   return (
