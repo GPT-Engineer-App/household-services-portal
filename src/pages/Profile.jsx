@@ -25,22 +25,24 @@ const Profile = () => {
   };
 
   return (
-    <VStack spacing={4}>
-      <FormControl>
-        <FormLabel>Profilnamn</FormLabel>
-        <Input type="text" value={profile.name} onChange={(e) => setProfile({ ...profile, name: e.target.value })} />
-      </FormControl>
-      <FormControl>
-        <FormLabel>BIO</FormLabel>
-        <Input type="text" value={profile.bio} onChange={(e) => setProfile({ ...profile, bio: e.target.value })} />
-      </FormControl>
-      <FormControl>
-        <FormLabel>Profilbild</FormLabel>
-        <Input type="file" accept="image/*" onChange={handleImageUpload} />
-        {profile.image && <Image src={profile.image} alt="Profilbild" boxSize="100px" />}
-      </FormControl>
-      <Button colorScheme="blue">Uppdatera Profil</Button>
-    </VStack>
+    <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh" p={6}>
+      <VStack spacing={4} p={6}>
+        <FormControl>
+          <FormLabel>Profilnamn</FormLabel>
+          <Input type="text" value={profile.name} onChange={(e) => setProfile({ ...profile, name: e.target.value })} />
+        </FormControl>
+        <FormControl>
+          <FormLabel>BIO</FormLabel>
+          <Input type="text" value={profile.bio} onChange={(e) => setProfile({ ...profile, bio: e.target.value })} />
+        </FormControl>
+        <FormControl>
+          <FormLabel>Profilbild</FormLabel>
+          <Input type="file" accept="image/*" onChange={handleImageUpload} />
+          {profile.image && <Image src={profile.image} alt="Profilbild" boxSize="100px" />}
+        </FormControl>
+        <Button colorScheme="blue">Uppdatera Profil</Button>
+      </VStack>
+    </Box>
   );
 };
 
