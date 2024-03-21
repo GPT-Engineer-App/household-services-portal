@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Button, Container, Flex, FormControl, FormLabel, Heading, Input, Stack, Textarea, useToast, VStack, Image, List, ListItem, ListIcon, IconButton } from "@chakra-ui/react";
+import { Box, Button, Container, Flex, FormControl, FormLabel, Heading, Input, Select, Stack, Textarea, useToast, VStack, Image, List, ListItem, ListIcon, IconButton } from "@chakra-ui/react";
 import { FaTrash, FaPlus, FaUserCircle } from "react-icons/fa";
 
 const Index = () => {
@@ -78,8 +78,15 @@ const Index = () => {
               <Textarea id="description" placeholder="Beskriv tjänsten du behöver" name="description" value={formData.description} onChange={handleInputChange} />
             </FormControl>
             <FormControl isRequired>
-              <FormLabel htmlFor="price">Pris (SEK)</FormLabel>
-              <Input id="price" placeholder="Ange ett pris för tjänsten" name="price" type="number" value={formData.price} onChange={handleInputChange} />
+              <FormLabel htmlFor="priceType">Pristyp</FormLabel>
+              <Select id="priceType" name="priceType" value={formData.priceType} onChange={handleInputChange}>
+                <option value="hourly">Per timma</option>
+                <option value="fixed">Engångsavgift</option>
+              </Select>
+            </FormControl>
+            <FormControl isRequired>
+              <FormLabel htmlFor="price">Pris ({formData.priceType === "hourly" ? "SEK/timma" : "SEK"})</FormLabel>
+              <Input id="price" placeholder={`Ange ${formData.priceType === "hourly" ? "timlön" : "fast pris"} för tjänsten`} name="price" type="number" value={formData.price} onChange={handleInputChange} />
             </FormControl>
             <Button leftIcon={<FaPlus />} colorScheme="blue" type="submit">
               Lägg upp annons
@@ -99,7 +106,9 @@ const Index = () => {
                       <Box color="gray.600" fontSize="sm" mb={2}>
                         {ad.description}
                       </Box>
-                      <Box fontWeight="semibold">Pris: {ad.price} SEK</Box>
+                      <Box fontWeight="semibold">
+                        Pris: {ad.price} SEK {ad.priceType === "hourly" ? "per timma" : "(engångsavgift)"}
+                      </Box>
                     </Box>
                     <IconButton icon={<FaTrash />} colorScheme="red" variant="ghost" onClick={() => handleDelete(ad.id)} aria-label="Delete ad" />
                   </Flex>
