@@ -7,6 +7,7 @@ const Index = () => {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
+    address: "",
   });
 
   const toast = useToast();
@@ -26,7 +27,7 @@ const Index = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (formData.title && formData.description && formData.price) {
+    if (formData.title && formData.description && formData.address && formData.price) {
       const paymentSuccessful = await processPayment(formData.price);
       if (paymentSuccessful) {
         setAds((prevAds) => [...prevAds, { ...formData, id: Math.random().toString(36).substr(2, 9) }]);
@@ -78,6 +79,10 @@ const Index = () => {
               <Textarea id="description" placeholder="Beskriv tjänsten du behöver" name="description" value={formData.description} onChange={handleInputChange} />
             </FormControl>
             <FormControl isRequired>
+              <FormLabel htmlFor="address">Adress</FormLabel>
+              <Input id="address" placeholder="Ange adressen för tjänsten" name="address" value={formData.address} onChange={handleInputChange} />
+            </FormControl>
+            <FormControl isRequired>
               <FormLabel htmlFor="priceType">Pristyp</FormLabel>
               <Select id="priceType" name="priceType" value={formData.priceType} onChange={handleInputChange}>
                 <option value="hourly">Per timma</option>
@@ -105,6 +110,9 @@ const Index = () => {
                       <Heading size="sm">{ad.title}</Heading>
                       <Box color="gray.600" fontSize="sm" mb={2}>
                         {ad.description}
+                      </Box>
+                      <Box color="gray.500" fontSize="sm" mb={2}>
+                        Adress: {ad.address}
                       </Box>
                       <Box fontWeight="semibold">
                         Pris: {ad.price} SEK {ad.priceType === "hourly" ? "per timma" : "(engångsavgift)"}
