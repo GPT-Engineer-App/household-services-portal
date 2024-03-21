@@ -108,7 +108,7 @@ const Index = () => {
   return (
     <Container maxW="container.xl" p={5}>
       <Flex justify="space-between" align="center" mb={6}>
-        <Heading>Anslagstavla för Hushållstjänster</Heading>
+        <Heading>SnabbTjänst</Heading>
         <Flex align="center">
           <Image borderRadius="full" boxSize="40px" src={currentUser && currentUser.image ? currentUser.image : "https://via.placeholder.com/40"} alt="Profile" mr={2} />
           <Link to="/profile">
