@@ -33,7 +33,7 @@ const Profile = () => {
 
   const handleUpdateProfile = () => {
     localStorage.setItem("profile", JSON.stringify(profile));
-    navigate("/");
+    navigate("/index");
   };
 
   return (
