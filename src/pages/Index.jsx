@@ -19,11 +19,28 @@ const Index = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const processPayment = async (amount) => {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    return true;
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (formData.title && formData.description) {
-      setAds((prevAds) => [...prevAds, { ...formData, id: Math.random().toString(36).substr(2, 9) }]);
-      setFormData({ title: "", description: "" });
+    if (formData.title && formData.description && formData.price) {
+      const paymentSuccessful = await processPayment(formData.price);
+      if (paymentSuccessful) {
+        setAds((prevAds) => [...prevAds, { ...formData, id: Math.random().toString(36).substr(2, 9) }]);
+        setFormData({ title: "", description: "", price: "" });
+      } else {
+        toast({
+          title: "Betalning misslyckades.",
+          description: "Det gick inte att genomföra betalningen. Försök igen.",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+        return;
+      }
       toast({
         title: "Annons publicerad.",
         description: "Din annons är nu synlig för andra.",
@@ -60,6 +77,10 @@ const Index = () => {
               <FormLabel htmlFor="description">Beskrivning</FormLabel>
               <Textarea id="description" placeholder="Beskriv tjänsten du behöver" name="description" value={formData.description} onChange={handleInputChange} />
             </FormControl>
+            <FormControl isRequired>
+              <FormLabel htmlFor="price">Pris (SEK)</FormLabel>
+              <Input id="price" placeholder="Ange ett pris för tjänsten" name="price" type="number" value={formData.price} onChange={handleInputChange} />
+            </FormControl>
             <Button leftIcon={<FaPlus />} colorScheme="blue" type="submit">
               Lägg upp annons
             </Button>
@@ -75,9 +96,10 @@ const Index = () => {
                     <Image borderRadius="full" boxSize="50px" src="https://images.unsplash.com/photo-1489424731084-a5d8b219a5bb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w1MDcxMzJ8MHwxfHNlYXJjaHwxfHxlbXBsb3llZSUyMHBvcnRyYWl0fGVufDB8fHx8MTcxMTAxNDk5NXww&ixlib=rb-4.0.3&q=80&w=1080" alt="User portrait" mr={4} />
                     <Box flex={1}>
                       <Heading size="sm">{ad.title}</Heading>
-                      <Box color="gray.600" fontSize="sm">
+                      <Box color="gray.600" fontSize="sm" mb={2}>
                         {ad.description}
                       </Box>
+                      <Box fontWeight="semibold">Pris: {ad.price} SEK</Box>
                     </Box>
                     <IconButton icon={<FaTrash />} colorScheme="red" variant="ghost" onClick={() => handleDelete(ad.id)} aria-label="Delete ad" />
                   </Flex>
