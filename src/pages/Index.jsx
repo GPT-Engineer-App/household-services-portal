@@ -9,6 +9,11 @@ const Index = () => {
     return storedAds ? JSON.parse(storedAds) : [];
   });
 
+  const [currentUser, setCurrentUser] = useState(() => {
+    const storedUser = localStorage.getItem("currentUser");
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
+
   useEffect(() => {
     localStorage.setItem("ads", JSON.stringify(ads));
   }, [ads]);
@@ -42,7 +47,12 @@ const Index = () => {
     if (formData.title && formData.description && formData.address && formData.price) {
       const paymentSuccessful = await processPayment(formData.price);
       if (paymentSuccessful) {
-        const newAd = { ...formData, id: Math.random().toString(36).substr(2, 9) };
+        const newAd = {
+          ...formData,
+          id: Math.random().toString(36).substr(2, 9),
+          postedBy: currentUser,
+          applicants: [],
+        };
         setAds((prevAds) => [...prevAds, newAd]);
         setFormData({ title: "", description: "", price: "" });
       } else {
@@ -76,6 +86,21 @@ const Index = () => {
   const handleDelete = (adId) => {
     setAds((prevAds) => {
       const updatedAds = prevAds.filter((ad) => ad.id !== adId);
+      return updatedAds;
+    });
+  };
+
+  const handleApply = (adId) => {
+    setAds((prevAds) => {
+      const updatedAds = prevAds.map((ad) => {
+        if (ad.id === adId) {
+          return {
+            ...ad,
+            applicants: [...ad.applicants, currentUser],
+          };
+        }
+        return ad;
+      });
       return updatedAds;
     });
   };
@@ -131,9 +156,12 @@ const Index = () => {
               {ads.map((ad) => (
                 <ListItem key={ad.id} p={4} boxShadow="md" borderRadius="md">
                   <Flex align="center" justify="space-between">
-                    <Image borderRadius="full" boxSize="50px" src="https://images.unsplash.com/photo-1489424731084-a5d8b219a5bb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w1MDcxMzJ8MHwxfHNlYXJjaHwxfHxlbXBsb3llZSUyMHBvcnRyYWl0fGVufDB8fHx8MTcxMTAxNDk5NXww&ixlib=rb-4.0.3&q=80&w=1080" alt="User portrait" mr={4} />
+                    <Image borderRadius="full" boxSize="50px" src={ad.postedBy.image} alt={`${ad.postedBy.name}'s portrait`} mr={4} />
                     <Box flex={1}>
                       <Heading size="sm">{ad.title}</Heading>
+                      <Box color="gray.600" fontSize="sm" mb={2}>
+                        Posted by {ad.postedBy.name}
+                      </Box>
                       <Box color="gray.600" fontSize="sm" mb={2}>
                         {ad.description}
                       </Box>
@@ -143,8 +171,13 @@ const Index = () => {
                       <Box fontWeight="semibold">
                         Pris: {ad.price} SEK {ad.priceType === "hourly" ? "per timma" : "(engångsavgift)"}
                       </Box>
+                      {currentUser && ad.postedBy.name !== currentUser.name && (
+                        <Button size="sm" colorScheme="green" mt={2} onClick={() => handleApply(ad.id)} disabled={ad.applicants.some((applicant) => applicant.name === currentUser.name)}>
+                          {ad.applicants.some((applicant) => applicant.name === currentUser.name) ? "Applied" : "Apply"}
+                        </Button>
+                      )}
                     </Box>
-                    <IconButton icon={<FaTrash />} colorScheme="red" variant="ghost" onClick={() => handleDelete(ad.id)} aria-label="Delete ad" />
+                    {currentUser && ad.postedBy.name === currentUser.name && <IconButton icon={<FaTrash />} colorScheme="red" variant="ghost" onClick={() => handleDelete(ad.id)} aria-label="Delete ad" />}
                   </Flex>
                 </ListItem>
               ))}
