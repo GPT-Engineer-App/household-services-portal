@@ -109,13 +109,13 @@ const Index = () => {
     <Container maxW="container.xl" p={5}>
       <Flex justify="space-between" align="center" mb={6}>
         <Heading>Anslagstavla för Hushållstjänster</Heading>
-        <Flex align="center" justifyContent="flex-end">
+        <Flex align="center">
+          <Image borderRadius="full" boxSize="40px" src="https://via.placeholder.com/40" alt="Profile" mr={2} />
           <Link to="/profile">
-            <Button leftIcon={<FaUserCircle />} variant="ghost" mr={2}>
+            <Button leftIcon={<FaUserCircle />} variant="ghost">
               Min Profil
             </Button>
           </Link>
-          <Image borderRadius="full" boxSize="40px" src="https://via.placeholder.com/40" alt="Profile" />
         </Flex>
       </Flex>
       <Flex direction={{ base: "column", md: "row" }}>
