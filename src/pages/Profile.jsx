@@ -15,6 +15,8 @@ const Profile = () => {
         };
   });
 
+  
+
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     const reader = new FileReader();
@@ -30,6 +32,8 @@ const Profile = () => {
       reader.readAsDataURL(file);
     }
   };
+
+  
 
   const handleUpdateProfile = () => {
     localStorage.setItem("profile", JSON.stringify(profile));
