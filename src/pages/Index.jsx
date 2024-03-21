@@ -1,9 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Box, Button, Container, Flex, FormControl, FormLabel, Heading, Input, Select, Stack, Textarea, useToast, VStack, Image, List, ListItem, ListIcon, IconButton } from "@chakra-ui/react";
 import { FaTrash, FaPlus, FaUserCircle } from "react-icons/fa";
 
 const Index = () => {
-  const [ads, setAds] = useState([]);
+  const [ads, setAds] = useState(() => {
+    const storedAds = localStorage.getItem("ads");
+    return storedAds ? JSON.parse(storedAds) : [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem("ads", JSON.stringify(ads));
+  }, [ads]);
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -30,7 +37,8 @@ const Index = () => {
     if (formData.title && formData.description && formData.address && formData.price) {
       const paymentSuccessful = await processPayment(formData.price);
       if (paymentSuccessful) {
-        setAds((prevAds) => [...prevAds, { ...formData, id: Math.random().toString(36).substr(2, 9) }]);
+        const newAd = { ...formData, id: Math.random().toString(36).substr(2, 9) };
+        setAds((prevAds) => [...prevAds, newAd]);
         setFormData({ title: "", description: "", price: "" });
       } else {
         toast({
@@ -61,7 +69,10 @@ const Index = () => {
   };
 
   const handleDelete = (adId) => {
-    setAds((prevAds) => prevAds.filter((ad) => ad.id !== adId));
+    setAds((prevAds) => {
+      const updatedAds = prevAds.filter((ad) => ad.id !== adId);
+      return updatedAds;
+    });
   };
 
   return (
