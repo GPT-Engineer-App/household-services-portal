@@ -157,7 +157,7 @@ const Index = () => {
         </Box>
         <Box flex={2} mt={{ base: 6, md: 0 }}>
           <Stack spacing={4}>
-            <Heading size="md">Aktiva förfrågningar</Heading>
+            <Heading size="md">Aktiva annonser</Heading>
             <List spacing={3}>
               {ads.map((ad) => (
                 <ListItem key={ad.id} p={4} boxShadow="md" borderRadius="md">
@@ -166,7 +166,7 @@ const Index = () => {
                     <Box flex={1}>
                       <Heading size="sm">{ad.title}</Heading>
                       <Box color="gray.600" fontSize="sm" mb={2}>
-                        Posted by {ad.postedBy.name}
+                        Publicerad av {ad.postedBy.name}
                       </Box>
                       <Box color="gray.600" fontSize="sm" mb={2}>
                         {ad.description}
@@ -180,19 +180,19 @@ const Index = () => {
                       {currentUser && ad.postedBy.name !== currentUser.name && (
                         <>
                           <Button size="sm" colorScheme="green" mt={2} onClick={() => handleApply(ad.id)} disabled={ad.applicants.some((applicant) => applicant.name === currentUser.name)}>
-                            {ad.applicants.some((applicant) => applicant.name === currentUser.name) ? "Applied" : "Apply"}
+                            {ad.applicants.some((applicant) => applicant.name === currentUser.name) ? "Ansökt" : "Ansök"}
                           </Button>
-                          <Button size="sm" colorScheme="blue" mt={2} ml={2} onClick={() => handleStartChat(ad.postedBy)}>
-                            Start Chat
+                          <Button size="sm" colorScheme="blue" mt={2} ml={2} onClick={() => handleStartChat(ad)}>
+                            Starta chatt
                           </Button>
                         </>
                       )}
                     </Box>
-                    {currentUser && ad.postedBy.name === currentUser.name && <IconButton icon={<FaTrash />} colorScheme="red" variant="ghost" onClick={() => handleDelete(ad.id)} aria-label="Delete ad" />}
+                    {currentUser && ad.postedBy.name === currentUser.name && <IconButton icon={<FaTrash />} colorScheme="red" variant="ghost" onClick={() => handleDelete(ad.id)} aria-label="Ta bort annons" />}
                   </Flex>
                 </ListItem>
               ))}
-              {ads.length === 0 && <ListItem>Inga aktiva förfrågningar. Var först med att lägga upp en!</ListItem>}
+              {ads.length === 0 && <ListItem>Inga aktiva annonser. Var först med att lägga upp en!</ListItem>}
             </List>
           </Stack>
         </Box>
