@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Box, Input, Button, Text, VStack, HStack, Heading, IconButton } from "@chakra-ui/react";
 import { FaRegSmile, FaArrowLeft } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
-const Chat = ({ location }) => {
+const Chat = () => {
   const navigate = useNavigate();
-  const { adId, userId } = location.state;
+  const location = useLocation();
+  const { adId, userId } = location.state || {};
 
   const hasNotification = localStorage.getItem(`chat_notification_${userId}`) === "true";
 
@@ -36,6 +37,15 @@ const Chat = ({ location }) => {
       setInputMessage("");
     }
   };
+
+  if (!adId || !userId) {
+    return (
+      <Box p={4}>
+        <Text>No chat data available.</Text>
+        <Button onClick={() => navigate(-1)}>Go Back</Button>
+      </Box>
+    );
+  }
 
   return (
     <Box bg="gray.100" minH="100vh">
