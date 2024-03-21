@@ -1,57 +1,46 @@
-import React, { useState, useEffect } from "react";
-import { Box, Button, FormControl, FormLabel, Heading, Input, Textarea, useToast, VStack } from "@chakra-ui/react";
+import React, { useState } from "react";
+import { Box, Button, FormControl, FormLabel, Image, Input, VStack } from "@chakra-ui/react";
 
 const Profile = () => {
-  const [profile, setProfile] = useState(() => {
-    const storedProfile = localStorage.getItem("profile");
-    return storedProfile ? JSON.parse(storedProfile) : { name: "", bio: "", image: "" };
+  const [profile, setProfile] = useState({
+    name: "",
+    bio: "",
+    image: null,
   });
 
-  useEffect(() => {
-    localStorage.setItem("profile", JSON.stringify(profile));
-  }, [profile]);
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    const reader = new FileReader();
 
-  const toast = useToast();
+    reader.onloadend = () => {
+      setProfile((prev) => ({
+        ...prev,
+        image: reader.result,
+      }));
+    };
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setProfile((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    toast({
-      title: "Profil uppdaterad.",
-      status: "success",
-      duration: 3000,
-      isClosable: true,
-    });
+    if (file) {
+      reader.readAsDataURL(file);
+    }
   };
 
   return (
-    <Box p={5}>
-      <Heading mb={6}>Min Profil</Heading>
-      <VStack spacing={4} as="form" onSubmit={handleSubmit}>
-        <FormControl>
-          <FormLabel htmlFor="name">Namn</FormLabel>
-          <Input id="name" name="name" value={profile.name} onChange={handleInputChange} />
-        </FormControl>
-        <FormControl>
-          <FormLabel htmlFor="bio">Bio</FormLabel>
-          <Textarea id="bio" name="bio" value={profile.bio} onChange={handleInputChange} />
-        </FormControl>
-        <FormControl>
-          <FormLabel htmlFor="image">Profilbild URL</FormLabel>
-          <Input id="image" name="image" value={profile.image} onChange={handleInputChange} />
-        </FormControl>
-        <Button colorScheme="blue" type="submit">
-          Spara
-        </Button>
-      </VStack>
-    </Box>
+    <VStack spacing={4}>
+      <FormControl>
+        <FormLabel>Profilnamn</FormLabel>
+        <Input type="text" value={profile.name} onChange={(e) => setProfile({ ...profile, name: e.target.value })} />
+      </FormControl>
+      <FormControl>
+        <FormLabel>BIO</FormLabel>
+        <Input type="text" value={profile.bio} onChange={(e) => setProfile({ ...profile, bio: e.target.value })} />
+      </FormControl>
+      <FormControl>
+        <FormLabel>Profilbild</FormLabel>
+        <Input type="file" accept="image/*" onChange={handleImageUpload} />
+        {profile.image && <Image src={profile.image} alt="Profilbild" boxSize="100px" />}
+      </FormControl>
+      <Button colorScheme="blue">Uppdatera Profil</Button>
+    </VStack>
   );
 };
 
