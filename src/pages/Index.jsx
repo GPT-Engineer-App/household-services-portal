@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Box, Button, Container, Flex, FormControl, FormLabel, Heading, Input, Select, Stack, Textarea, useToast, VStack, Image, List, ListItem, IconButton } from "@chakra-ui/react";
+import { Box, Button, Container, Flex, FormControl, FormLabel, Heading, Input, Select, Stack, Textarea, useToast, VStack, Image, List, ListItem, IconButton, useDisclosure } from "@chakra-ui/react";
+import ProfilePopup from "../components/ProfilePopup";
 import { FaTrash, FaPlus, FaUserCircle } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
@@ -105,8 +106,12 @@ const Index = () => {
     });
   };
 
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [selectedUser, setSelectedUser] = useState(null);
+
   return (
     <Container maxW="container.xl" p={5}>
+      <ProfilePopup isOpen={isOpen} onClose={onClose} user={selectedUser} />
       <Flex justify="space-between" align="center" mb={6}>
         <Heading>Anslagstavla för Hushållstjänster</Heading>
         <Flex align="center">
@@ -156,7 +161,18 @@ const Index = () => {
               {ads.map((ad) => (
                 <ListItem key={ad.id} p={4} boxShadow="md" borderRadius="md">
                   <Flex align="center" justify="space-between">
-                    <Image borderRadius="full" boxSize="50px" src={currentUser && currentUser.image ? currentUser.image : "https://via.placeholder.com/50"} alt={`${ad.postedBy.name}'s portrait`} mr={4} />
+                    <Image
+                      borderRadius="full"
+                      boxSize="50px"
+                      src={currentUser && currentUser.image ? currentUser.image : "https://via.placeholder.com/50"}
+                      alt={`${ad.postedBy.name}'s portrait`}
+                      mr={4}
+                      cursor="pointer"
+                      onClick={() => {
+                        setSelectedUser(ad.postedBy);
+                        onOpen();
+                      }}
+                    />
                     <Box flex={1}>
                       <Heading size="sm">{ad.title}</Heading>
                       <Box color="gray.600" fontSize="sm" mb={2}>
