@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Box, Button, Container, Flex, FormControl, FormLabel, Heading, Input, Select, Stack, Textarea, useToast, VStack, Image, List, ListItem, ListIcon, IconButton } from "@chakra-ui/react";
+import { Box, Button, Container, Flex, FormControl, FormLabel, Heading, Input, Select, Stack, Textarea, useToast, VStack, Image, List, ListItem, IconButton } from "@chakra-ui/react";
 import { FaTrash, FaPlus, FaUserCircle } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const Index = () => {
   const [ads, setAds] = useState(() => {
@@ -81,7 +82,17 @@ const Index = () => {
 
   return (
     <Container maxW="container.xl" p={5}>
-      <Heading mb={6}>Anslagstavla för Hushållstjänster</Heading>
+      <Flex justify="space-between" align="center" mb={6}>
+        <Heading>Anslagstavla för Hushållstjänster</Heading>
+        <Flex align="center">
+          <Image borderRadius="full" boxSize="40px" src="https://via.placeholder.com/40" alt="Profile" mr={2} />
+          <Link to="/profile">
+            <Button leftIcon={<FaUserCircle />} variant="ghost">
+              Min Profil
+            </Button>
+          </Link>
+        </Flex>
+      </Flex>
       <Flex direction={{ base: "column", md: "row" }}>
         <Box flex={1} mr={{ base: 0, md: 6 }}>
           <VStack spacing={4} as="form" onSubmit={handleSubmit}>
