@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Box, FormControl, FormLabel, Input, VStack, Button, Image, Textarea } from "@chakra-ui/react";
 
 const Profile = () => {
+  const navigate = useNavigate();
   const [profile, setProfile] = useState(() => {
     const storedProfile = localStorage.getItem("profile");
     return storedProfile ? JSON.parse(storedProfile) : { name: "", bio: "", image: "", password: "" };
@@ -43,6 +45,7 @@ const Profile = () => {
       if (newPassword === confirmPassword) {
         setProfile({ ...profile, password: newPassword });
         alert("Profile updated!");
+        navigate("/index");
       } else {
         alert("New password and confirm password do not match!");
       }
