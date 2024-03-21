@@ -1,17 +1,26 @@
 import React, { useState, useEffect } from "react";
 import { Box, Input, Button, Text, VStack, HStack } from "@chakra-ui/react";
+import { FaRegSmile } from "react-icons/fa";
 
 const Chat = ({ location }) => {
+  const { adId, userId } = location.state;
+
+  const hasNotification = localStorage.getItem(`chat_notification_${userId}`) === "true";
+
+  if (hasNotification) {
+    localStorage.removeItem(`chat_notification_${userId}`);
+  }
+
   const [messages, setMessages] = useState(() => {
-    const storedMessages = localStorage.getItem(`messages_${location.state.userId}`);
+    const storedMessages = localStorage.getItem(`messages_${adId}_${userId}`);
     return storedMessages ? JSON.parse(storedMessages) : [];
   });
   const [inputMessage, setInputMessage] = useState("");
   const currentUser = JSON.parse(localStorage.getItem("profile"));
 
   useEffect(() => {
-    localStorage.setItem(`messages_${location.state.userId}`, JSON.stringify(messages));
-  }, [messages, location.state.userId]);
+    localStorage.setItem(`messages_${adId}_${userId}`, JSON.stringify(messages));
+  }, [messages, adId, userId]);
 
   const handleSendMessage = () => {
     if (inputMessage.trim() !== "") {

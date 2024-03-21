@@ -106,8 +106,9 @@ const Index = () => {
     });
   };
 
-  const handleStartChat = (user) => {
-    navigate("/chat", { state: { userId: user.name } });
+  const handleStartChat = (ad) => {
+    localStorage.setItem(`chat_notification_${ad.postedBy.name}`, "true");
+    navigate("/chat", { state: { adId: ad.id, userId: currentUser.name } });
   };
 
   return (
