@@ -4,8 +4,11 @@ import { Box, FormControl, FormLabel, Input, VStack, Button, Image, Textarea } f
 const Profile = () => {
   const [profile, setProfile] = useState(() => {
     const storedProfile = localStorage.getItem("profile");
-    return storedProfile ? JSON.parse(storedProfile) : { name: "", bio: "", image: "" };
+    return storedProfile ? JSON.parse(storedProfile) : { name: "", bio: "", image: "", password: "" };
   });
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   useEffect(() => {
     localStorage.setItem("profile", JSON.stringify(profile));
@@ -13,7 +16,15 @@ const Profile = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setProfile({ ...profile, [name]: value });
+    if (name === "currentPassword") {
+      setCurrentPassword(value);
+    } else if (name === "newPassword") {
+      setNewPassword(value);
+    } else if (name === "confirmPassword") {
+      setConfirmPassword(value);
+    } else {
+      setProfile({ ...profile, [name]: value });
+    }
   };
 
   const handleImageUpload = (e) => {
@@ -27,6 +38,23 @@ const Profile = () => {
     }
   };
 
+  const handleUpdateProfile = () => {
+    if (currentPassword === profile.password) {
+      if (newPassword === confirmPassword) {
+        setProfile({ ...profile, password: newPassword });
+        alert("Profile updated!");
+      } else {
+        alert("New password and confirm password do not match!");
+      }
+    } else {
+      alert("Current password is incorrect!");
+    }
+    localStorage.setItem("profile", JSON.stringify(profile));
+    setCurrentPassword("");
+    setNewPassword("");
+    setConfirmPassword("");
+  };
+
   return (
     <VStack spacing={4} align="stretch" p={4}>
       <FormControl>
@@ -38,17 +66,23 @@ const Profile = () => {
         <Textarea placeholder="A short bio" name="bio" value={profile.bio} onChange={handleInputChange} />
       </FormControl>
       <FormControl>
+        <FormLabel>Current Password</FormLabel>
+        <Input type="password" placeholder="Enter your current password" name="currentPassword" value={currentPassword} onChange={handleInputChange} />
+      </FormControl>
+      <FormControl>
+        <FormLabel>New Password</FormLabel>
+        <Input type="password" placeholder="Enter your new password" name="newPassword" value={newPassword} onChange={handleInputChange} />
+      </FormControl>
+      <FormControl>
+        <FormLabel>Confirm New Password</FormLabel>
+        <Input type="password" placeholder="Confirm your new password" name="confirmPassword" value={confirmPassword} onChange={handleInputChange} />
+      </FormControl>
+      <FormControl>
         <FormLabel>Profile Picture</FormLabel>
         <Input type="file" accept="image/*" onChange={handleImageUpload} />
         {profile.image && <Image src={profile.image} alt="Profile picture" />}
       </FormControl>
-      <Button
-        colorScheme="blue"
-        onClick={() => {
-          localStorage.setItem("profile", JSON.stringify(profile));
-          alert("Profile updated!");
-        }}
-      >
+      <Button colorScheme="blue" onClick={handleUpdateProfile}>
         Update Profile
       </Button>
     </VStack>
