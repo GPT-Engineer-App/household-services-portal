@@ -116,14 +116,11 @@ const Index = () => {
         <Heading>Anslagstavla för Hushållstjänster</Heading>
         <Flex align="center">
           <Image borderRadius="full" boxSize="40px" src="https://via.placeholder.com/40" alt="Profile" mr={2} />
-          <Flex align="center">
-            <Image borderRadius="full" boxSize="40px" src={currentUser && currentUser.image ? currentUser.image : "https://via.placeholder.com/40"} alt="Profile" mr={2} />
-            <Link to="/profile">
-              <Button leftIcon={<FaUserCircle />} variant="ghost">
-                Min Profil
-              </Button>
-            </Link>
-          </Flex>
+          <Link to="/profile">
+            <Button leftIcon={<FaUserCircle />} variant="ghost">
+              Min Profil
+            </Button>
+          </Link>
         </Flex>
       </Flex>
       <Flex direction={{ base: "column", md: "row" }}>
