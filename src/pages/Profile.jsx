@@ -2,10 +2,15 @@ import React, { useState } from "react";
 import { Box, Button, FormControl, FormLabel, Image, Input, VStack } from "@chakra-ui/react";
 
 const Profile = () => {
-  const [profile, setProfile] = useState({
-    name: "",
-    bio: "",
-    image: null,
+  const [profile, setProfile] = useState(() => {
+    const storedProfile = localStorage.getItem("profile");
+    return storedProfile
+      ? JSON.parse(storedProfile)
+      : {
+          name: "",
+          bio: "",
+          image: null,
+        };
   });
 
   const handleImageUpload = (e) => {
@@ -24,6 +29,10 @@ const Profile = () => {
     }
   };
 
+  const handleUpdateProfile = () => {
+    localStorage.setItem("profile", JSON.stringify(profile));
+  };
+
   return (
     <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh" p={6}>
       <VStack spacing={4} p={6}>
@@ -40,7 +49,9 @@ const Profile = () => {
           <Input type="file" accept="image/*" onChange={handleImageUpload} />
           {profile.image && <Image src={profile.image} alt="Profilbild" boxSize="100px" />}
         </FormControl>
-        <Button colorScheme="blue">Uppdatera Profil</Button>
+        <Button colorScheme="blue" onClick={handleUpdateProfile}>
+          Uppdatera Profil
+        </Button>
       </VStack>
     </Box>
   );
