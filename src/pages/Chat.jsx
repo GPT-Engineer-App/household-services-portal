@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Box, Input, Button, Text, VStack, HStack } from "@chakra-ui/react";
-import { FaRegSmile } from "react-icons/fa";
+import { Box, Input, Button, Text, VStack, HStack, Heading, IconButton } from "@chakra-ui/react";
+import { FaRegSmile, FaArrowLeft } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const Chat = ({ location }) => {
   const { adId, userId } = location.state;
