@@ -1,28 +1,28 @@
-import React, { useState, useEffect } from 'react';
-import { Box, Input, Button, Text, VStack, HStack } from '@chakra-ui/react';
+import React, { useState, useEffect } from "react";
+import { Box, Input, Button, Text, VStack, HStack } from "@chakra-ui/react";
 
-const Chat = () => {
-  const [messages, setMessages] = useState([]);
-  const [inputMessage, setInputMessage] = useState('');
+const Chat = ({ location }) => {
+  const [messages, setMessages] = useState(() => {
+    const storedMessages = localStorage.getItem(`messages_${location.state.userId}`);
+    return storedMessages ? JSON.parse(storedMessages) : [];
+  });
+  const [inputMessage, setInputMessage] = useState("");
+  const currentUser = JSON.parse(localStorage.getItem("profile"));
 
   useEffect(() => {
-    const storedMessages = localStorage.getItem('messages');
-    if (storedMessages) {
-      setMessages(JSON.parse(storedMessages));
-    }
-  }, []);
+    localStorage.setItem(`messages_${location.state.userId}`, JSON.stringify(messages));
+  }, [messages, location.state.userId]);
 
   const handleSendMessage = () => {
-    if (inputMessage.trim() !== '') {
+    if (inputMessage.trim() !== "") {
       const newMessage = {
         id: Date.now(),
         text: inputMessage,
+        sender: currentUser.name,
         timestamp: new Date().toLocaleString(),
       };
-      const updatedMessages = [...messages, newMessage];
-      setMessages(updatedMessages);
-      localStorage.setItem('messages', JSON.stringify(updatedMessages));
-      setInputMessage('');
+      setMessages((prevMessages) => [...prevMessages, newMessage]);
+      setInputMessage("");
     }
   };
 
@@ -37,11 +37,7 @@ const Chat = () => {
           ))}
         </Box>
         <HStack>
-          <Input
-            value={inputMessage}
-            onChange={(e) => setInputMessage(e.target.value)}
-            placeholder="Type a message..."
-          />
+          <Input value={inputMessage} onChange={(e) => setInputMessage(e.target.value)} placeholder="Type a message..." />
           <Button onClick={handleSendMessage} colorScheme="blue">
             Send
           </Button>

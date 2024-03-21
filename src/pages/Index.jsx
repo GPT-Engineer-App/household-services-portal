@@ -106,6 +106,10 @@ const Index = () => {
     });
   };
 
+  const handleStartChat = (user) => {
+    navigate("/chat", { state: { userId: user.name } });
+  };
+
   return (
     <Container maxW="container.xl" p={5}>
       <Flex justify="space-between" align="center" mb={6}>
@@ -173,9 +177,14 @@ const Index = () => {
                         Pris: {ad.price} SEK {ad.priceType === "hourly" ? "per timma" : "(engångsavgift)"}
                       </Box>
                       {currentUser && ad.postedBy.name !== currentUser.name && (
-                        <Button size="sm" colorScheme="green" mt={2} onClick={() => handleApply(ad.id)} disabled={ad.applicants.some((applicant) => applicant.name === currentUser.name)}>
-                          {ad.applicants.some((applicant) => applicant.name === currentUser.name) ? "Applied" : "Apply"}
-                        </Button>
+                        <>
+                          <Button size="sm" colorScheme="green" mt={2} onClick={() => handleApply(ad.id)} disabled={ad.applicants.some((applicant) => applicant.name === currentUser.name)}>
+                            {ad.applicants.some((applicant) => applicant.name === currentUser.name) ? "Applied" : "Apply"}
+                          </Button>
+                          <Button size="sm" colorScheme="blue" mt={2} ml={2} onClick={() => handleStartChat(ad.postedBy)}>
+                            Start Chat
+                          </Button>
+                        </>
                       )}
                     </Box>
                     {currentUser && ad.postedBy.name === currentUser.name && <IconButton icon={<FaTrash />} colorScheme="red" variant="ghost" onClick={() => handleDelete(ad.id)} aria-label="Delete ad" />}
