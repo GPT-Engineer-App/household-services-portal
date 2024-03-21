@@ -14,7 +14,7 @@ const colors = {
 const theme = extendTheme({
   colors,
   fonts: {
-    body: "SF Pro Text, sans-serif",
+    body: "Roboto, sans-serif",
   },
 });
 
