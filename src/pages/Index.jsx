@@ -25,16 +25,16 @@ const Index = () => {
       setAds((prevAds) => [...prevAds, { ...formData, id: Math.random().toString(36).substr(2, 9) }]);
       setFormData({ title: "", description: "" });
       toast({
-        title: "Advertisement posted.",
-        description: "Your ad is now live for others to see.",
+        title: "Annons publicerad.",
+        description: "Din annons är nu synlig för andra.",
         status: "success",
         duration: 5000,
         isClosable: true,
       });
     } else {
       toast({
-        title: "Missing fields.",
-        description: "Please fill out all fields before submitting.",
+        title: "Fält saknas.",
+        description: "Vänligen fyll i alla fält innan du skickar in.",
         status: "error",
         duration: 5000,
         isClosable: true,
@@ -48,26 +48,26 @@ const Index = () => {
 
   return (
     <Container maxW="container.xl" p={5}>
-      <Heading mb={6}>Household Services Bulletin Board</Heading>
+      <Heading mb={6}>Anslagstavla för Hushållstjänster</Heading>
       <Flex direction={{ base: "column", md: "row" }}>
         <Box flex={1} mr={{ base: 0, md: 6 }}>
           <VStack spacing={4} as="form" onSubmit={handleSubmit}>
             <FormControl isRequired>
-              <FormLabel htmlFor="title">Service Needed</FormLabel>
-              <Input id="title" placeholder="Enter a title for your request" name="title" value={formData.title} onChange={handleInputChange} />
+              <FormLabel htmlFor="title">Tjänst som behövs</FormLabel>
+              <Input id="title" placeholder="Ange en titel för din förfrågan" name="title" value={formData.title} onChange={handleInputChange} />
             </FormControl>
             <FormControl isRequired>
-              <FormLabel htmlFor="description">Description</FormLabel>
-              <Textarea id="description" placeholder="Describe the service you need" name="description" value={formData.description} onChange={handleInputChange} />
+              <FormLabel htmlFor="description">Beskrivning</FormLabel>
+              <Textarea id="description" placeholder="Beskriv tjänsten du behöver" name="description" value={formData.description} onChange={handleInputChange} />
             </FormControl>
             <Button leftIcon={<FaPlus />} colorScheme="blue" type="submit">
-              Post Ad
+              Lägg upp annons
             </Button>
           </VStack>
         </Box>
         <Box flex={2} mt={{ base: 6, md: 0 }}>
           <Stack spacing={4}>
-            <Heading size="md">Active Requests</Heading>
+            <Heading size="md">Aktiva förfrågningar</Heading>
             <List spacing={3}>
               {ads.map((ad) => (
                 <ListItem key={ad.id} p={4} boxShadow="md" borderRadius="md">
@@ -83,7 +83,7 @@ const Index = () => {
                   </Flex>
                 </ListItem>
               ))}
-              {ads.length === 0 && <ListItem>No active requests. Be the first to post one!</ListItem>}
+              {ads.length === 0 && <ListItem>Inga aktiva förfrågningar. Var först med att lägga upp en!</ListItem>}
             </List>
           </Stack>
         </Box>
