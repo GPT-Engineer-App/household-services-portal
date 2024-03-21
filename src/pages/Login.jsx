@@ -14,7 +14,7 @@ const Login = () => {
       const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
       const user = storedUsers.find((user) => user.name === username && user.password === password);
       if (user) {
-        localStorage.setItem("profile", JSON.stringify(user));
+        localStorage.setItem("profile", JSON.stringify({ ...user, bio: user.bio || "", image: user.image || "" }));
         navigate("/index");
       } else {
         alert("Invalid username or password.");
@@ -33,7 +33,7 @@ const Login = () => {
           const newUser = { name: username, password };
           storedUsers.push(newUser);
           localStorage.setItem("users", JSON.stringify(storedUsers));
-          localStorage.setItem("profile", JSON.stringify(newUser));
+          localStorage.setItem("profile", JSON.stringify({ ...newUser, bio: "", image: "" }));
           navigate("/index");
         } else {
           alert("Username already exists. Please choose a different username.");
