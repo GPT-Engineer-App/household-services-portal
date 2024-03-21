@@ -10,7 +10,7 @@ const Index = () => {
   });
 
   const [currentUser, setCurrentUser] = useState(() => {
-    const storedUser = localStorage.getItem("currentUser");
+    const storedUser = localStorage.getItem("profile");
     return storedUser ? JSON.parse(storedUser) : null;
   });
 
@@ -156,7 +156,7 @@ const Index = () => {
               {ads.map((ad) => (
                 <ListItem key={ad.id} p={4} boxShadow="md" borderRadius="md">
                   <Flex align="center" justify="space-between">
-                    <Image borderRadius="full" boxSize="50px" src={ad.postedBy.image} alt={`${ad.postedBy.name}'s portrait`} mr={4} />
+                    <Image borderRadius="full" boxSize="50px" src={currentUser && currentUser.image ? currentUser.image : "https://via.placeholder.com/50"} alt={`${ad.postedBy.name}'s portrait`} mr={4} />
                     <Box flex={1}>
                       <Heading size="sm">{ad.title}</Heading>
                       <Box color="gray.600" fontSize="sm" mb={2}>
