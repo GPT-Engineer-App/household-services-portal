@@ -1,44 +1,57 @@
 import React, { useState, useEffect } from "react";
-import { Box, Button, FormControl, FormLabel, Input, VStack, Textarea } from "@chakra-ui/react";
+import { Box, FormControl, FormLabel, Input, VStack, Button, Image, Textarea } from "@chakra-ui/react";
 
 const Profile = () => {
   const [profile, setProfile] = useState(() => {
     const storedProfile = localStorage.getItem("profile");
-    return storedProfile ? JSON.parse(storedProfile) : { name: "", password: "", bio: "", image: "" };
+    return storedProfile ? JSON.parse(storedProfile) : { name: "", bio: "", image: "" };
   });
 
   useEffect(() => {
     localStorage.setItem("profile", JSON.stringify(profile));
   }, [profile]);
 
-  const handleSaveProfile = () => {
-    localStorage.setItem("profile", JSON.stringify(profile));
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setProfile({ ...profile, [name]: value });
+  };
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfile({ ...profile, image: reader.result });
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   return (
-    <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh" p={6}>
-      <VStack spacing={4} p={6}>
-        <FormControl>
-          <FormLabel>Användarnamn</FormLabel>
-          <Input type="text" value={profile.name} onChange={(e) => setProfile({ ...profile, name: e.target.value })} />
-        </FormControl>
-        <FormControl>
-          <FormLabel>Lösenord</FormLabel>
-          <Input type="password" value={profile.password} onChange={(e) => setProfile({ ...profile, password: e.target.value })} />
-        </FormControl>
-        <FormControl>
-          <FormLabel>Bio</FormLabel>
-          <Textarea value={profile.bio} onChange={(e) => setProfile({ ...profile, bio: e.target.value })} />
-        </FormControl>
-        <FormControl>
-          <FormLabel>Profilbild (URL)</FormLabel>
-          <Input type="text" value={profile.image} onChange={(e) => setProfile({ ...profile, image: e.target.value })} />
-        </FormControl>
-        <Button colorScheme="blue" onClick={handleSaveProfile}>
-          Spara
-        </Button>
-      </VStack>
-    </Box>
+    <VStack spacing={4} align="stretch" p={4}>
+      <FormControl>
+        <FormLabel>Username</FormLabel>
+        <Input placeholder="Enter your username" name="name" value={profile.name} onChange={handleInputChange} />
+      </FormControl>
+      <FormControl>
+        <FormLabel>Bio</FormLabel>
+        <Textarea placeholder="A short bio" name="bio" value={profile.bio} onChange={handleInputChange} />
+      </FormControl>
+      <FormControl>
+        <FormLabel>Profile Picture</FormLabel>
+        <Input type="file" accept="image/*" onChange={handleImageUpload} />
+        {profile.image && <Image src={profile.image} alt="Profile picture" />}
+      </FormControl>
+      <Button
+        colorScheme="blue"
+        onClick={() => {
+          localStorage.setItem("profile", JSON.stringify(profile));
+          alert("Profile updated!");
+        }}
+      >
+        Update Profile
+      </Button>
+    </VStack>
   );
 };
 

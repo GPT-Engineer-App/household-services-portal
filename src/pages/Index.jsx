@@ -115,7 +115,7 @@ const Index = () => {
       <Flex justify="space-between" align="center" mb={6}>
         <Heading>SnabbTjänst</Heading>
         <Flex align="center">
-          <Image borderRadius="full" boxSize="40px" src={currentUser.image || "https://via.placeholder.com/40"} alt="Profile" mr={2} />
+          <Image borderRadius="full" boxSize="40px" src={currentUser.image} fallbackSrc="https://via.placeholder.com/40" alt="Profile" mr={2} />
           <Link to="/profile">
             <Button leftIcon={<FaUserCircle />} variant="ghost">
               Min Profil
@@ -161,7 +161,7 @@ const Index = () => {
               {ads.map((ad) => (
                 <ListItem key={ad.id} p={4} boxShadow="md" borderRadius="md">
                   <Flex align="center" justify="space-between">
-                    <Image borderRadius="full" boxSize="50px" src={ad.postedBy.image || "https://via.placeholder.com/50"} alt={`${ad.postedBy.name}'s portrait`} mr={4} />
+                    <Image borderRadius="full" boxSize="50px" src={ad.postedBy.image} fallbackSrc="https://via.placeholder.com/50" alt={`${ad.postedBy.name}'s portrait`} mr={4} />
                     <Box flex={1}>
                       <Heading size="sm">{ad.title}</Heading>
                       <Box color="gray.600" fontSize="sm" mb={2}>
