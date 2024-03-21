@@ -11,6 +11,10 @@ const Index = () => {
   useEffect(() => {
     localStorage.setItem("ads", JSON.stringify(ads));
   }, [ads]);
+
+  useEffect(() => {
+    localStorage.setItem("ads", JSON.stringify(ads));
+  }, [ads]);
   const [formData, setFormData] = useState({
     title: "",
     description: "",
