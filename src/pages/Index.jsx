@@ -110,7 +110,7 @@ const Index = () => {
       <Flex justify="space-between" align="center" mb={6}>
         <Heading>Anslagstavla för Hushållstjänster</Heading>
         <Flex align="center">
-          <Image borderRadius="full" boxSize="40px" src="https://via.placeholder.com/40" alt="Profile" mr={2} />
+          <Image borderRadius="full" boxSize="40px" src={currentUser && currentUser.image ? currentUser.image : "https://via.placeholder.com/40"} alt="Profile" mr={2} />
           <Link to="/profile">
             <Button leftIcon={<FaUserCircle />} variant="ghost">
               Min Profil
