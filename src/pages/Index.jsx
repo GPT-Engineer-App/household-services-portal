@@ -6,7 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 const Index = () => {
   const navigate = useNavigate();
   const [ads, setAds] = useState(() => {
-    const storedAds = localStorage.getItem("ads");
+    const storedAds = sessionStorage.getItem("ads");
     return storedAds ? JSON.parse(storedAds) : [];
   });
 
@@ -16,11 +16,11 @@ const Index = () => {
   });
 
   useEffect(() => {
-    localStorage.setItem("ads", JSON.stringify(ads));
+    sessionStorage.setItem("ads", JSON.stringify(ads));
   }, [ads]);
 
   useEffect(() => {
-    localStorage.setItem("ads", JSON.stringify(ads));
+    sessionStorage.setItem("ads", JSON.stringify(ads));
   }, [ads]);
   const [formData, setFormData] = useState({
     title: "",
