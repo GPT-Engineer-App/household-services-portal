@@ -11,8 +11,14 @@ const Login = () => {
 
   const handleLogin = () => {
     if (username && password) {
-      localStorage.setItem("profile", JSON.stringify({ name: username, password }));
-      navigate("/index");
+      const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
+      const user = storedUsers.find((user) => user.name === username && user.password === password);
+      if (user) {
+        localStorage.setItem("profile", JSON.stringify(user));
+        navigate("/index");
+      } else {
+        alert("Invalid username or password.");
+      }
     } else {
       alert("Please enter your username and password.");
     }
@@ -21,8 +27,17 @@ const Login = () => {
   const handleSignUp = () => {
     if (username && password && confirmPassword) {
       if (password === confirmPassword) {
-        localStorage.setItem("profile", JSON.stringify({ name: username, password }));
-        navigate("/index");
+        const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
+        const userExists = storedUsers.some((user) => user.name === username);
+        if (!userExists) {
+          const newUser = { name: username, password };
+          storedUsers.push(newUser);
+          localStorage.setItem("users", JSON.stringify(storedUsers));
+          localStorage.setItem("profile", JSON.stringify(newUser));
+          navigate("/index");
+        } else {
+          alert("Username already exists. Please choose a different username.");
+        }
       } else {
         alert("Passwords do not match!");
       }
