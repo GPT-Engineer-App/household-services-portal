@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Box, Button, Container, Flex, FormControl, FormLabel, Heading, Input, Select, Stack, Textarea, useToast, VStack, Image, List, ListItem, IconButton } from "@chakra-ui/react";
-import { FaTrash, FaPlus, FaUserCircle } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { FaTrash, FaPlus, FaUserCircle, FaComments } from "react-icons/fa";
+import { Link, useNavigate } from "react-router-dom";
 
 const Index = () => {
+  const navigate = useNavigate();
   const [ads, setAds] = useState(() => {
     const storedAds = localStorage.getItem("ads");
     return storedAds ? JSON.parse(storedAds) : [];
@@ -186,6 +187,11 @@ const Index = () => {
           </Stack>
         </Box>
       </Flex>
+      <Box mt={6}>
+        <Button leftIcon={<FaComments />} colorScheme="green" onClick={() => navigate("/chat")}>
+          Open Chat
+        </Button>
+      </Box>
     </Container>
   );
 };
