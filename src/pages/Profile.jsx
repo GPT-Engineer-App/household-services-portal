@@ -66,7 +66,7 @@ const Profile = () => {
       if (newPassword === confirmPassword) {
         setProfile({ ...profile, password: newPassword });
         alert("Profile updated!");
-        navigate("/index");
+        navigate("/");
       } else {
         alert("New password and confirm password do not match!");
       }
