@@ -19,8 +19,8 @@ function App() {
   );
 }
 
-if (!localStorage.getItem("globalAds")) {
-  localStorage.setItem("globalAds", JSON.stringify([]));
+if (!sessionStorage.getItem("globalAds")) {
+  sessionStorage.setItem("globalAds", JSON.stringify([]));
 }
 
 export default App;
