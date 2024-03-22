@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Box, FormControl, FormLabel, Input, VStack, Button, Image, Textarea } from "@chakra-ui/react";
 
 const Profile = () => {
@@ -109,6 +109,11 @@ const Profile = () => {
       <Button colorScheme="blue" onClick={handleUpdateProfile}>
         Update Profile
       </Button>
+    <Link to="/">
+        <Button colorScheme="blue" mt={4}>
+          Go to Dashboard
+        </Button>
+      </Link>
     </VStack>
   );
 };
