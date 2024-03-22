@@ -14,10 +14,7 @@ const Login = () => {
       const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
       const user = storedUsers.find((user) => user.name === username && user.password === password);
       if (user) {
-        const loggedInProfiles = JSON.parse(localStorage.getItem("loggedInProfiles")) || [];
-        loggedInProfiles.push({ ...user, bio: user.bio || "", image: user.image || "" });
-        localStorage.setItem("loggedInProfiles", JSON.stringify(loggedInProfiles));
-        localStorage.setItem("activeProfile", JSON.stringify({ ...user, bio: user.bio || "", image: user.image || "" }));
+        localStorage.setItem("profile", JSON.stringify({ ...user, bio: user.bio || "", image: user.image || "" }));
         navigate("/index");
       } else {
         alert("Invalid username or password.");
@@ -36,10 +33,7 @@ const Login = () => {
           const newUser = { name: username, password };
           storedUsers.push(newUser);
           localStorage.setItem("users", JSON.stringify(storedUsers));
-          const loggedInProfiles = JSON.parse(localStorage.getItem("loggedInProfiles")) || [];
-          loggedInProfiles.push({ ...newUser, bio: "", image: "" });
-          localStorage.setItem("loggedInProfiles", JSON.stringify(loggedInProfiles));
-          localStorage.setItem("activeProfile", JSON.stringify({ ...newUser, bio: "", image: "" }));
+          localStorage.setItem("profile", JSON.stringify({ ...newUser, bio: "", image: "" }));
           navigate("/index");
         } else {
           alert("Username already exists. Please choose a different username.");
