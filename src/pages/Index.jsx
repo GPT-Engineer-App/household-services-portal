@@ -1,13 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { Box, Heading, VStack, Text } from "@chakra-ui/react";
+import { Box, Heading, VStack, Text, Button } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
 
 const Index = () => {
+  const navigate = useNavigate();
   const [ads, setAds] = useState([]);
 
   useEffect(() => {
-    const storedAds = JSON.parse(localStorage.getItem("ads")) || [];
+    const storedAds = JSON.parse(localStorage.getItem("globalAds")) || [];
     setAds(storedAds);
   }, []);
+
+  const handleChatClick = (adId, userId) => {
+    navigate("/chat", { state: { adId, userId } });
+  };
 
   return (
     <VStack spacing={4} align="stretch" p={4}>
@@ -23,6 +29,10 @@ const Index = () => {
               {ad.title}
             </Heading>
             <Text mt={4}>{ad.description}</Text>
+            <Text mt={2}>Posted by: {ad.postedBy.name}</Text>
+            <Button mt={4} onClick={() => handleChatClick(ad.id, ad.postedBy.name)}>
+              Chat with {ad.postedBy.name}
+            </Button>
           </Box>
         ))
       )}
