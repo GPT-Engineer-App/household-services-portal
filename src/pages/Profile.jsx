@@ -16,16 +16,37 @@ const Profile = () => {
     localStorage.setItem("profile", JSON.stringify(profile));
   }, [profile]);
 
+  const updateAdsWithNewUsername = (newName, oldName) => {
+    const ads = JSON.parse(localStorage.getItem("ads")) || [];
+    const updatedAds = ads.map((ad) => {
+      if (ad.postedBy.name === oldName) {
+        ad.postedBy.name = newName;
+      }
+
+      ad.applicants = ad.applicants.map((applicant) => {
+        return applicant.name === oldName ? { ...applicant, name: newName } : applicant;
+      });
+      return ad;
+    });
+    localStorage.setItem("ads", JSON.stringify(updatedAds));
+  };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    setProfile((prevProfile) => {
+      const updatedProfile = { ...prevProfile, [name]: value };
+      if (name === "name" && prevProfile.name !== value) {
+        updateAdsWithNewUsername(value, prevProfile.name);
+      }
+      return updatedProfile;
+    });
+
     if (name === "currentPassword") {
       setCurrentPassword(value);
     } else if (name === "newPassword") {
       setNewPassword(value);
     } else if (name === "confirmPassword") {
       setConfirmPassword(value);
-    } else {
-      setProfile({ ...profile, [name]: value });
     }
   };
 
