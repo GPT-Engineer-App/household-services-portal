@@ -5,7 +5,7 @@ const Index = () => {
   const [ads, setAds] = useState([]);
 
   useEffect(() => {
-    const storedAds = JSON.parse(localStorage.getItem("globalAds")) || [];
+    const storedAds = JSON.parse(localStorage.getItem("ads")) || [];
     setAds(storedAds);
   }, []);
 
