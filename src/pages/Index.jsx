@@ -5,16 +5,9 @@ const Index = () => {
   const [ads, setAds] = useState([]);
 
   useEffect(() => {
-    const storedAds = JSON.parse(localStorage.getItem("globalAds"));
+    const storedAds = JSON.parse(localStorage.getItem("globalAds")) || [];
     setAds(storedAds);
   }, []);
-
-  const addAd = (newAd) => {
-    const storedAds = JSON.parse(localStorage.getItem("globalAds")) || [];
-    const updatedAds = [...storedAds, newAd];
-    localStorage.setItem("globalAds", JSON.stringify(updatedAds));
-    setAds(updatedAds);
-  };
 
   return (
     <VStack spacing={4} align="stretch" p={4}>
