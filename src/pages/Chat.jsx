@@ -32,7 +32,7 @@ const Chat = () => {
         console.error("Error fetching messages:", error);
         toast({
           title: "Error",
-          description: "Failed to fetch messages. Please try again.",
+          description: "Failed to fetch messages. Please check the console for more details.",
           status: "error",
           duration: 5000,
           isClosable: true,
@@ -52,7 +52,7 @@ const Chat = () => {
         console.error("Error fetching current user:", error);
         toast({
           title: "Error",
-          description: "Failed to fetch current user. Please try again.",
+          description: "Failed to fetch current user. Please check the console for more details.",
           status: "error",
           duration: 5000,
           isClosable: true,

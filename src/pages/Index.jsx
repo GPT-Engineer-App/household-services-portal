@@ -21,7 +21,7 @@ const Index = () => {
         console.error("Error fetching ads:", error);
         toast({
           title: "Error",
-          description: "Failed to fetch ads. Please try again.",
+          description: "Failed to fetch ads. Please check the console for more details.",
           status: "error",
           duration: 5000,
           isClosable: true,
@@ -41,7 +41,7 @@ const Index = () => {
         console.error("Error fetching current user:", error);
         toast({
           title: "Error",
-          description: "Failed to fetch current user. Please try again.",
+          description: "Failed to fetch current user. Please check the console for more details.",
           status: "error",
           duration: 5000,
           isClosable: true,
