@@ -9,52 +9,11 @@ const Index = () => {
   const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
-    const fetchAds = async () => {
-      try {
-        console.log("Fetching ads...");
-        const response = await fetch("/api/ads");
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        console.log("Fetched ads successfully:", data);
-        setAds(data);
-      } catch (error) {
-        console.error("Error fetching ads:", error);
-        toast({
-          title: "Error",
-          description: "Failed to fetch ads. Please check the console for more details.",
-          status: "error",
-          duration: 5000,
-          isClosable: true,
-        });
-      }
-    };
+    const storedAds = JSON.parse(localStorage.getItem("ads")) || [];
+    setAds(storedAds);
 
-    const fetchCurrentUser = async () => {
-      try {
-        console.log("Fetching current user...");
-        const response = await fetch("/api/users/current");
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        console.log("Fetched current user successfully:", data);
-        setCurrentUser(data);
-      } catch (error) {
-        console.error("Error fetching current user:", error);
-        toast({
-          title: "Error",
-          description: "Failed to fetch current user. Please check the console for more details.",
-          status: "error",
-          duration: 5000,
-          isClosable: true,
-        });
-      }
-    };
-
-    fetchAds();
-    fetchCurrentUser();
+    const storedProfile = JSON.parse(localStorage.getItem("profile"));
+    setCurrentUser(storedProfile);
   }, []);
   const [formData, setFormData] = useState({
     title: "",
@@ -77,40 +36,23 @@ const Index = () => {
     return true;
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     if (formData.title && formData.description && formData.address && formData.price) {
-      const paymentSuccessful = await processPayment(formData.price);
-      if (paymentSuccessful) {
-        try {
-          const response = await fetch("/api/ads", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ ...formData, postedBy: currentUser._id }),
-          });
+      const newAd = {
+        id: Date.now().toString(),
+        ...formData,
+        postedBy: currentUser,
+        applicants: [],
+      };
 
-          if (response.ok) {
-            const newAd = await response.json();
-            setAds((prevAds) => [...prevAds, newAd]);
-            setFormData({ title: "", description: "", price: "" });
-          } else {
-            throw new Error("Failed to create ad");
-          }
-        } catch (error) {
-          console.error("Error creating ad:", error);
-        }
-      } else {
-        toast({
-          title: "Betalning misslyckades.",
-          description: "Det gick inte att genomföra betalningen. Försök igen.",
-          status: "error",
-          duration: 5000,
-          isClosable: true,
-        });
-        return;
-      }
+      const storedAds = JSON.parse(localStorage.getItem("ads")) || [];
+      storedAds.push(newAd);
+      localStorage.setItem("ads", JSON.stringify(storedAds));
+
+      setAds((prevAds) => [...prevAds, newAd]);
+      setFormData({ title: "", description: "", address: "", priceType: "hourly", price: "" });
+
       toast({
         title: "Annons publicerad.",
         description: "Din annons är nu synlig för andra.",
@@ -129,40 +71,26 @@ const Index = () => {
     }
   };
 
-  const handleDelete = async (adId) => {
-    try {
-      await fetch(`/api/ads/${adId}`, {
-        method: "DELETE",
-      });
-      setAds((prevAds) => prevAds.filter((ad) => ad._id !== adId));
-    } catch (error) {
-      console.error("Error deleting ad:", error);
-    }
+  const handleDelete = (adId) => {
+    const storedAds = JSON.parse(localStorage.getItem("ads")) || [];
+    const updatedAds = storedAds.filter((ad) => ad.id !== adId);
+    localStorage.setItem("ads", JSON.stringify(updatedAds));
+    setAds(updatedAds);
   };
 
-  const handleApply = async (adId) => {
-    try {
-      await fetch(`/api/ads/${adId}/apply`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ userId: currentUser._id }),
-      });
-      setAds((prevAds) =>
-        prevAds.map((ad) => {
-          if (ad._id === adId) {
-            return {
-              ...ad,
-              applicants: [...ad.applicants, currentUser._id],
-            };
-          }
-          return ad;
-        }),
-      );
-    } catch (error) {
-      console.error("Error applying to ad:", error);
-    }
+  const handleApply = (adId) => {
+    const storedAds = JSON.parse(localStorage.getItem("ads")) || [];
+    const updatedAds = storedAds.map((ad) => {
+      if (ad.id === adId) {
+        return {
+          ...ad,
+          applicants: [...ad.applicants, currentUser.name],
+        };
+      }
+      return ad;
+    });
+    localStorage.setItem("ads", JSON.stringify(updatedAds));
+    setAds(updatedAds);
   };
 
   const handleStartChat = (ad) => {

@@ -20,77 +20,32 @@ const Chat = () => {
   const toast = useToast();
 
   useEffect(() => {
-    const fetchMessages = async () => {
-      try {
-        console.log("Fetching messages...");
-        const response = await fetch(`/api/messages?adId=${adId}&userId=${userId}`);
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        console.log("Fetched messages successfully:", data);
-        setMessages(data);
-      } catch (error) {
-        console.error("Error fetching messages:", error);
-        toast({
-          title: "Error",
-          description: "Failed to fetch messages. Please check the console for more details.",
-          status: "error",
-          duration: 5000,
-          isClosable: true,
-        });
-      }
-    };
+    const storedMessages = JSON.parse(localStorage.getItem("messages")) || [];
+    const filteredMessages = storedMessages.filter((message) => message.ad === adId && (message.sender === userId || message.recipient === userId));
+    setMessages(filteredMessages);
 
-    const fetchCurrentUser = async () => {
-      try {
-        const response = await fetch("/api/users/current");
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        setCurrentUser(data);
-      } catch (error) {
-        console.error("Error fetching current user:", error);
-        toast({
-          title: "Error",
-          description: "Failed to fetch current user. Please check the console for more details.",
-          status: "error",
-          duration: 5000,
-          isClosable: true,
-        });
-      }
-    };
-
-    fetchMessages();
-    fetchCurrentUser();
+    const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
+    const currentUser = storedUsers.find((user) => user.name === userId);
+    setCurrentUser(currentUser);
   }, [adId, userId]);
 
-  const handleSendMessage = async () => {
+  const handleSendMessage = () => {
     if (inputMessage.trim() !== "") {
-      try {
-        const response = await fetch("/api/messages", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            text: inputMessage,
-            sender: currentUser._id,
-            ad: adId,
-          }),
-        });
+      const newMessage = {
+        id: Date.now().toString(),
+        text: inputMessage,
+        sender: userId,
+        recipient: adId,
+        ad: adId,
+        timestamp: new Date().toISOString(),
+      };
 
-        if (response.ok) {
-          const newMessage = await response.json();
-          setMessages((prevMessages) => [...prevMessages, newMessage]);
-          setInputMessage("");
-        } else {
-          throw new Error("Failed to send message");
-        }
-      } catch (error) {
-        console.error("Error sending message:", error);
-      }
+      const storedMessages = JSON.parse(localStorage.getItem("messages")) || [];
+      storedMessages.push(newMessage);
+      localStorage.setItem("messages", JSON.stringify(storedMessages));
+
+      setMessages((prevMessages) => [...prevMessages, newMessage]);
+      setInputMessage("");
     }
   };
 
