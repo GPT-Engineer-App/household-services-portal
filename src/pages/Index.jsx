@@ -8,13 +8,31 @@ const Index = () => {
   const [ads, setAds] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
 
-  useEffect(() => {
-    const storedAds = JSON.parse(localStorage.getItem("ads")) || [];
-    setAds(storedAds);
+  const toast = useToast();
 
-    const storedProfile = JSON.parse(localStorage.getItem("profile"));
-    setCurrentUser(storedProfile);
-  }, []);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const storedAds = JSON.parse(localStorage.getItem("ads")) || [];
+        setAds(storedAds);
+
+        const storedProfile = JSON.parse(localStorage.getItem("profile"));
+        setCurrentUser(storedProfile);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        toast({
+          title: "Error",
+          description: "Failed to fetch data. Please try again.",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+      }
+    };
+
+    fetchData();
+  }, [toast]);
+  
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -22,8 +40,6 @@ const Index = () => {
     priceType: "hourly",
     price: "",
   });
-
-  const toast = useToast();
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
