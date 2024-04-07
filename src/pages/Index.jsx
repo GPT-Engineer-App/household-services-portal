@@ -12,20 +12,40 @@ const Index = () => {
     const fetchAds = async () => {
       try {
         const response = await fetch("/api/ads");
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
         const data = await response.json();
         setAds(data);
       } catch (error) {
         console.error("Error fetching ads:", error);
+        toast({
+          title: "Error",
+          description: "Failed to fetch ads. Please try again.",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
       }
     };
 
     const fetchCurrentUser = async () => {
       try {
         const response = await fetch("/api/users/current");
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
         const data = await response.json();
         setCurrentUser(data);
       } catch (error) {
         console.error("Error fetching current user:", error);
+        toast({
+          title: "Error",
+          description: "Failed to fetch current user. Please try again.",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
       }
     };
 

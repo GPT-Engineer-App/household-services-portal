@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, Input, Button, Text, VStack, HStack, Heading, IconButton } from "@chakra-ui/react";
+import { Box, Input, Button, Text, VStack, HStack, Heading, IconButton, useToast } from "@chakra-ui/react";
 import { FaRegSmile, FaArrowLeft } from "react-icons/fa";
 import { useNavigate, useLocation } from "react-router-dom";
 
@@ -17,25 +17,46 @@ const Chat = () => {
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState("");
   const [currentUser, setCurrentUser] = useState(null);
+  const toast = useToast();
 
   useEffect(() => {
     const fetchMessages = async () => {
       try {
         const response = await fetch(`/api/messages?adId=${adId}&userId=${userId}`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
         const data = await response.json();
         setMessages(data);
       } catch (error) {
         console.error("Error fetching messages:", error);
+        toast({
+          title: "Error",
+          description: "Failed to fetch messages. Please try again.",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
       }
     };
 
     const fetchCurrentUser = async () => {
       try {
         const response = await fetch("/api/users/current");
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
         const data = await response.json();
         setCurrentUser(data);
       } catch (error) {
         console.error("Error fetching current user:", error);
+        toast({
+          title: "Error",
+          description: "Failed to fetch current user. Please try again.",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
       }
     };
 
