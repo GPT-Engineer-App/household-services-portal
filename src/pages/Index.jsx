@@ -11,11 +11,13 @@ const Index = () => {
   useEffect(() => {
     const fetchAds = async () => {
       try {
+        console.log("Fetching ads...");
         const response = await fetch("/api/ads");
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
+        console.log("Fetched ads successfully:", data);
         setAds(data);
       } catch (error) {
         console.error("Error fetching ads:", error);
@@ -31,11 +33,13 @@ const Index = () => {
 
     const fetchCurrentUser = async () => {
       try {
+        console.log("Fetching current user...");
         const response = await fetch("/api/users/current");
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
+        console.log("Fetched current user successfully:", data);
         setCurrentUser(data);
       } catch (error) {
         console.error("Error fetching current user:", error);

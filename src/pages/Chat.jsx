@@ -22,11 +22,13 @@ const Chat = () => {
   useEffect(() => {
     const fetchMessages = async () => {
       try {
+        console.log("Fetching messages...");
         const response = await fetch(`/api/messages?adId=${adId}&userId=${userId}`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
+        console.log("Fetched messages successfully:", data);
         setMessages(data);
       } catch (error) {
         console.error("Error fetching messages:", error);
