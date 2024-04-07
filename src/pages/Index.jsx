@@ -19,6 +19,8 @@ const Index = () => {
     title: "",
     description: "",
     address: "",
+    priceType: "hourly",
+    price: "",
   });
 
   const toast = useToast();
