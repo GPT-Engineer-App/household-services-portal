@@ -5,23 +5,33 @@ import { Link, useNavigate } from "react-router-dom";
 
 const Index = () => {
   const navigate = useNavigate();
-  const [ads, setAds] = useState(() => {
-    const storedAds = localStorage.getItem("ads");
-    return storedAds ? JSON.parse(storedAds) : [];
-  });
-
-  const [currentUser, setCurrentUser] = useState(() => {
-    const storedUser = localStorage.getItem("profile");
-    return storedUser ? JSON.parse(storedUser) : null;
-  });
+  const [ads, setAds] = useState([]);
+  const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
-    localStorage.setItem("ads", JSON.stringify(ads));
-  }, [ads]);
+    const fetchAds = async () => {
+      try {
+        const response = await fetch("/api/ads");
+        const data = await response.json();
+        setAds(data);
+      } catch (error) {
+        console.error("Error fetching ads:", error);
+      }
+    };
 
-  useEffect(() => {
-    localStorage.setItem("ads", JSON.stringify(ads));
-  }, [ads]);
+    const fetchCurrentUser = async () => {
+      try {
+        const response = await fetch("/api/users/current");
+        const data = await response.json();
+        setCurrentUser(data);
+      } catch (error) {
+        console.error("Error fetching current user:", error);
+      }
+    };
+
+    fetchAds();
+    fetchCurrentUser();
+  }, []);
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -48,14 +58,25 @@ const Index = () => {
     if (formData.title && formData.description && formData.address && formData.price) {
       const paymentSuccessful = await processPayment(formData.price);
       if (paymentSuccessful) {
-        const newAd = {
-          ...formData,
-          id: Math.random().toString(36).substr(2, 9),
-          postedBy: currentUser,
-          applicants: [],
-        };
-        setAds((prevAds) => [...prevAds, newAd]);
-        setFormData({ title: "", description: "", price: "" });
+        try {
+          const response = await fetch("/api/ads", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ ...formData, postedBy: currentUser._id }),
+          });
+
+          if (response.ok) {
+            const newAd = await response.json();
+            setAds((prevAds) => [...prevAds, newAd]);
+            setFormData({ title: "", description: "", price: "" });
+          } else {
+            throw new Error("Failed to create ad");
+          }
+        } catch (error) {
+          console.error("Error creating ad:", error);
+        }
       } else {
         toast({
           title: "Betalning misslyckades.",
@@ -84,26 +105,40 @@ const Index = () => {
     }
   };
 
-  const handleDelete = (adId) => {
-    setAds((prevAds) => {
-      const updatedAds = prevAds.filter((ad) => ad.id !== adId);
-      return updatedAds;
-    });
+  const handleDelete = async (adId) => {
+    try {
+      await fetch(`/api/ads/${adId}`, {
+        method: "DELETE",
+      });
+      setAds((prevAds) => prevAds.filter((ad) => ad._id !== adId));
+    } catch (error) {
+      console.error("Error deleting ad:", error);
+    }
   };
 
-  const handleApply = (adId) => {
-    setAds((prevAds) => {
-      const updatedAds = prevAds.map((ad) => {
-        if (ad.id === adId) {
-          return {
-            ...ad,
-            applicants: [...ad.applicants, currentUser],
-          };
-        }
-        return ad;
+  const handleApply = async (adId) => {
+    try {
+      await fetch(`/api/ads/${adId}/apply`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId: currentUser._id }),
       });
-      return updatedAds;
-    });
+      setAds((prevAds) =>
+        prevAds.map((ad) => {
+          if (ad._id === adId) {
+            return {
+              ...ad,
+              applicants: [...ad.applicants, currentUser._id],
+            };
+          }
+          return ad;
+        }),
+      );
+    } catch (error) {
+      console.error("Error applying to ad:", error);
+    }
   };
 
   const handleStartChat = (ad) => {

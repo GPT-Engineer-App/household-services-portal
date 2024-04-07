@@ -14,27 +14,60 @@ const Chat = () => {
     localStorage.removeItem(`chat_notification_${userId}`);
   }
 
-  const [messages, setMessages] = useState(() => {
-    const storedMessages = localStorage.getItem(`messages_${adId}_${userId}`);
-    return storedMessages ? JSON.parse(storedMessages) : [];
-  });
+  const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState("");
-  const currentUser = JSON.parse(localStorage.getItem("profile"));
+  const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
-    localStorage.setItem(`messages_${adId}_${userId}`, JSON.stringify(messages));
-  }, [messages, adId, userId]);
+    const fetchMessages = async () => {
+      try {
+        const response = await fetch(`/api/messages?adId=${adId}&userId=${userId}`);
+        const data = await response.json();
+        setMessages(data);
+      } catch (error) {
+        console.error("Error fetching messages:", error);
+      }
+    };
 
-  const handleSendMessage = () => {
+    const fetchCurrentUser = async () => {
+      try {
+        const response = await fetch("/api/users/current");
+        const data = await response.json();
+        setCurrentUser(data);
+      } catch (error) {
+        console.error("Error fetching current user:", error);
+      }
+    };
+
+    fetchMessages();
+    fetchCurrentUser();
+  }, [adId, userId]);
+
+  const handleSendMessage = async () => {
     if (inputMessage.trim() !== "") {
-      const newMessage = {
-        id: Date.now(),
-        text: inputMessage,
-        sender: currentUser.name,
-        timestamp: new Date().toLocaleString(),
-      };
-      setMessages((prevMessages) => [...prevMessages, newMessage]);
-      setInputMessage("");
+      try {
+        const response = await fetch("/api/messages", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            text: inputMessage,
+            sender: currentUser._id,
+            ad: adId,
+          }),
+        });
+
+        if (response.ok) {
+          const newMessage = await response.json();
+          setMessages((prevMessages) => [...prevMessages, newMessage]);
+          setInputMessage("");
+        } else {
+          throw new Error("Failed to send message");
+        }
+      } catch (error) {
+        console.error("Error sending message:", error);
+      }
     }
   };
 
