@@ -13,8 +13,14 @@ const Profile = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
 
   useEffect(() => {
-    localStorage.setItem("profile", JSON.stringify(profile));
-  }, [profile]);
+    const fetchProfile = async () => {
+      const response = await fetch("/api/profile");
+      const data = await response.json();
+      setProfile(data);
+    };
+
+    fetchProfile();
+  }, []);
 
   const updateAdsWithNewUsername = (newName, oldName) => {
     const ads = JSON.parse(localStorage.getItem("ads")) || [];
@@ -61,19 +67,30 @@ const Profile = () => {
     }
   };
 
-  const handleUpdateProfile = () => {
+  const handleUpdateProfile = async () => {
     if (currentPassword === profile.password) {
       if (newPassword === confirmPassword) {
-        setProfile({ ...profile, password: newPassword });
-        alert("Profile updated!");
-        navigate("/index");
+        const updatedProfile = { ...profile, password: newPassword };
+
+        const response = await fetch("/api/profile", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedProfile),
+        });
+
+        if (response.ok) {
+          setProfile(updatedProfile);
+          alert("Profile updated!");
+          navigate("/index");
+        }
       } else {
         alert("New password and confirm password do not match!");
       }
     } else {
       alert("Current password is incorrect!");
     }
-    localStorage.setItem("profile", JSON.stringify(profile));
     setCurrentPassword("");
     setNewPassword("");
     setConfirmPassword("");

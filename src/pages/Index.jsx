@@ -9,12 +9,28 @@ const Index = () => {
   const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
-    const storedAds = JSON.parse(localStorage.getItem("ads")) || [];
-    setAds(storedAds);
+    const fetchData = async () => {
+      const adsData = await fetchAds();
+      setAds(adsData);
 
-    const storedProfile = JSON.parse(localStorage.getItem("profile"));
-    setCurrentUser(storedProfile);
+      const profileData = await fetchProfile();
+      setCurrentUser(profileData);
+    };
+
+    fetchData();
   }, []);
+
+  const fetchAds = async () => {
+    const response = await fetch('/api/ads');
+    const data = await response.json();
+    return data;
+  };
+
+  const fetchProfile = async () => {
+    const response = await fetch('/api/profile');
+    const data = await response.json();
+    return data;
+  };
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -38,7 +54,7 @@ const Index = () => {
     return true;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (formData.title && formData.description && formData.address && formData.price) {
       const newAd = {
@@ -48,9 +64,20 @@ const Index = () => {
         applicants: [],
       };
 
-      const storedAds = JSON.parse(localStorage.getItem("ads")) || [];
-      storedAds.push(newAd);
-      localStorage.setItem("ads", JSON.stringify(storedAds));
+      // Save the new ad to the database
+      const response = await fetch('/api/ads', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newAd),
+      });
+      
+      if (response.ok) {
+       
+        const updatedAds = await fetchAds();
+        setAds(updatedAds);
+      }
 
       setAds((prevAds) => [...prevAds, newAd]);
       setFormData({ title: "", description: "", address: "", priceType: "hourly", price: "" });
