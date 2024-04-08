@@ -21,15 +21,31 @@ const Index = () => {
   }, []);
 
   const fetchAds = async () => {
-    const response = await fetch('/api/ads');
-    const data = await response.json();
-    return data;
+    try {
+      const response = await fetch("/api/ads");
+      if (!response.ok) {
+        throw new Error("Failed to fetch ads");
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error fetching ads:", error);
+      return [];
+    }
   };
 
   const fetchProfile = async () => {
-    const response = await fetch('/api/profile');
-    const data = await response.json();
-    return data;
+    try {
+      const response = await fetch("/api/profile");
+      if (!response.ok) {
+        throw new Error("Failed to fetch profile");
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error fetching profile:", error);
+      return null;
+    }
   };
   const [formData, setFormData] = useState({
     title: "",
@@ -65,16 +81,15 @@ const Index = () => {
       };
 
       // Save the new ad to the database
-      const response = await fetch('/api/ads', {
-        method: 'POST',
+      const response = await fetch("/api/ads", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(newAd),
       });
-      
+
       if (response.ok) {
-       
         const updatedAds = await fetchAds();
         setAds(updatedAds);
       }
